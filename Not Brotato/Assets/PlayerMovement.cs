@@ -5,8 +5,9 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
     private Rigidbody2D rb;
     private Vector2 movement;
-
     private Animator animator;
+
+    public MobileJoystick joystick; // Reference to the mobile joystick
 
     void Start()
     {
@@ -16,18 +17,18 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Input
-        movement.x = Input.GetAxis("Horizontal");
-        movement.y = Input.GetAxis("Vertical");
-        
-        if(movement.x != 0 || movement.y != 0){
-            animator.SetBool("running", true);
-        } else {animator.SetBool("running", false);}
+        // Get input from the joystick
+        movement = joystick.GetInput();
+
+        Debug.Log("Joystick Input: " + movement); // Debug log to check joystick values
+
+        // Set animator running state
+        animator.SetBool("running", movement.magnitude > 0);
     }
 
     void FixedUpdate()
     {
-        // Movement
+        // Move the player
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 }
